@@ -3,12 +3,19 @@ import { Container, Nav, Navbar, NavDropdown, Form, FormControl, Button } from '
 import './App.css';
 import Data from './data.js';
 import Detail from './Detail.js';
+import axios from 'axios';
 
 import { Link, Route, Switch } from 'react-router-dom';
 
 function App() {
 
-  let [movie, movie변경] = useState(Data); 
+  let [movie, movie변경] = useState(Data);   
+  // 페이지 방문하자마자 Ajax요청할 경우
+  // useEffect(()=>{
+  //   axios.get().then().catch();
+  // },[]);
+
+  let [재고, 재고변경] = useState([100, 101, 102]);
 
   return (
     <div className="App">
@@ -75,12 +82,26 @@ function App() {
                 })
               }
             </div>
+            <button className='btn btn-primary' onClick={() => {
+
+              axios.post('서버URL', { id : '전달할데이터', pw : 1234 });
+
+              axios.get(' https://codingapple1.github.io/shop/data2.json')
+              .then((result) => {
+                console.log(result.data)
+                // movie state에 ajax로 받아온 데이터 (result.data) 추가
+                movie변경( [...movie, ...result.data])
+              })
+              .catch(() => {
+                alert('데이터 로딩 실패')
+              });
+            }}>더보기</button>
           </div>
         </Route>
 
 
         <Route path="/detail/:id">
-          <Detail movie={movie} />
+          <Detail movie={movie} 재고={재고} 재고변경={재고변경} />
         </Route>
 
 
@@ -97,10 +118,12 @@ function App() {
 
 function Movie(props) {
   return (
-    <div className='col-md-4'>가로로 3분할
-      <img src={require('./img/' + props.i + '.jpg')} width="100%"/>
+    <div className='col-md-4'>
+      {/* <img src={require('./img/' + props.i + '.jpg')} width="100%"/> */}
+      원래img범위
+      {/* 인데 예제가 내 img 코드와 다름. 따라서 axios예제 실행을 위해 일단 주석처리 */}
       <h4>{ props.movie.title }</h4>
-      <p> 예매율 { props.movie.rate }% | ⭐{ props.movie.star } </p>
+      <p> 예매율 { props.movie.content }% | ⭐{ props.movie.price } </p>
     </div>
   )
 }

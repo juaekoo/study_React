@@ -72,9 +72,12 @@ function Detail(props) {
             </div>
             <div className="col-md-6 mt-4">
                 <h4 className="pt-5">{myMovie.title}</h4>
-                <p>예매율 {myMovie.rate}%</p>
-                <p>별점 ⭐{myMovie.star}</p>
-                <button className="btn btn-danger">주문하기</button> 
+                <p>예매율 {myMovie.content}%</p>
+                <p>별점 ⭐{myMovie.price}</p>
+                <Info 재고={props.재고}/>
+                <button className="btn btn-danger" onClick={() => {
+                    props.재고변경([9,11,12])
+                }}>주문하기</button> 
                 <button className="btn btn-danger" onClick={() => {
                     history.goBack();
                 }}>뒤로가기</button> 
@@ -84,6 +87,12 @@ function Detail(props) {
             </div>
             </div>
         </div> 
+    )
+}
+
+function Info(props) {
+    return (
+        <p>재고 : {props.재고[0]}</p>
     )
 }
 
