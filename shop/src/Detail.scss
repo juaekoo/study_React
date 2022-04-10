@@ -1,0 +1,57 @@
+// import './reset.scss';
+
+//1. $ : 변수처럼 사용
+$메인컬러 : #ff0000;
+.red {
+    color: $메인컬러;
+}
+
+//2. extend : 다른 class의 css를 모두 가져오기
+.my-alert {
+    background: #eeeeee;
+    padding : 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+    font-weight: bold;
+}
+.my-alert-mediumspringgreen {
+    @extend .my-alert;
+    background: mediumspringgreen;
+}
+
+//3. mixin, include : CSS설정들을 함수처럼 사용 (단, 함수가 위에 선언되어있어야 함) 
+@mixin 함수() {
+    background: #eeeeee;
+    padding : 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+}
+.my-alert2 {
+    @include 함수()
+}
+
+.my-alert p {
+    margin-bottom: 0;
+}
+
+// div.container h4 {
+//     color: violet;
+// }
+// div.container p {
+//     color: green;
+// }
+
+// SASS : 셀렉터 대신 nesting
+// div.container {
+//     h4 {
+//         color: violet;
+//     }
+//     p {
+//         color: green;
+//     }
+// }
+
