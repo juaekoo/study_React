@@ -1,5 +1,17 @@
 // import './reset.scss';
 
+// 애니메이션 시작 시 적용할 CSS
+.wow-enter {
+    opacity: 0;
+}
+
+// 애니메이션 동작 때 적용할 CSS
+.wow-enter-active {
+    opacity: 1;
+    transition: all 500ms;
+}
+
+
 //1. $ : 변수처럼 사용
 $메인컬러 : #ff0000;
 .red {

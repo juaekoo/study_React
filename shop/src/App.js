@@ -1,11 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Container, Nav, Navbar, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import './App.css';
 import Data from './data.js';
 import Detail from './Detail.js';
 import axios from 'axios';
-
 import { Link, Route, Switch } from 'react-router-dom';
+
+import Cart from './Cart.js'
+
+// 1. context 만들기 - 범위생성
+export let 재고context = React.createContext();
 
 function App() {
 
@@ -14,7 +18,6 @@ function App() {
   // useEffect(()=>{
   //   axios.get().then().catch();
   // },[]);
-
   let [재고, 재고변경] = useState([100, 101, 102]);
 
   return (
@@ -73,15 +76,21 @@ function App() {
           </div>
 
           <div className='container'>
-            <div className='row'>
-              {
-                // a는 하나하나의 데이터, i는 반복문 돌때마다 늘어나는 숫자
-                movie.map((a, i) => {
-                  // return <Movie movie={movie[i]}/> 아래와 같은 결과
-                  return <Movie movie={a} i={i} key={a.id}/>
-                })
-              }
-            </div>
+            {/* 2. 같은 값을 공유할 HTML을 <범위>로 싸매기 */}
+            <재고context.Provider value={재고}>
+
+              <div className='row'>
+                {
+                  // a는 하나하나의 데이터, i는 반복문 돌때마다 늘어나는 숫자
+                  movie.map((a, i) => {
+                    // return <Movie movie={movie[i]}/> 아래와 같은 결과
+                    return <Movie movie={a} i={i} key={a.id}/>
+                  })
+                }
+              </div>
+
+            </재고context.Provider>
+            
             <button className='btn btn-primary' onClick={() => {
 
               axios.post('서버URL', { id : '전달할데이터', pw : 1234 });
@@ -99,17 +108,15 @@ function App() {
           </div>
         </Route>
 
-
+        {/* :id란 '모든문자'라는 경로 */}
         <Route path="/detail/:id">
           <Detail movie={movie} 재고={재고} 재고변경={재고변경} />
         </Route>
 
-
         {/* <Route path="/컴포넌트넣고싶다면" component={Modal} ></Route> */}
 
-        {/* :id란 '모든문자'라는 경로 */}
-        <Route path="/:id"> 
-          <div> 아무 경로에서나 보여지는 친구! </div>
+        <Route path="/cart">
+          <Cart />
         </Route>
       </Switch>
     </div>
@@ -117,6 +124,9 @@ function App() {
 }
 
 function Movie(props) {
+
+  let 재고 = useContext(재고context);
+
   return (
     <div className='col-md-4'>
       {/* <img src={require('./img/' + props.i + '.jpg')} width="100%"/> */}
@@ -124,8 +134,15 @@ function Movie(props) {
       {/* 인데 예제가 내 img 코드와 다름. 따라서 axios예제 실행을 위해 일단 주석처리 */}
       <h4>{ props.movie.title }</h4>
       <p> 예매율 { props.movie.content }% | ⭐{ props.movie.price } </p>
+      {재고[0]}
+      <Test /> 
     </div>
   )
+}
+
+function Test() {
+  let 재고 = useContext(재고context);
+  return <p>{재고[1]}</p>
 }
 
 export default App;

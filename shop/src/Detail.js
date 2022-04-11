@@ -1,7 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
+import { Nav } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import './Detail.scss'
+import './Detail.scss';
+import {재고context} from './App.js';
+import { CSSTransition } from "react-transition-group";
+import { connect } from 'react-redux';
 
 // CSS를 입힌 div 박스 컴포넌트
 let 박스 = styled.div`
@@ -29,6 +33,10 @@ function Detail(props) {
     
     let [alert, alert변경] = useState(true);
     let [inputData, inputData변경] = useState('');
+    let [누른탭, 누른탭변경] = useState(0);
+    let [스위치, 스위치변경] = useState(false);
+
+    let 재고 = useContext(재고context);
 
     useEffect( () => {
         let 타이머 = setTimeout( () => { alert변경(false)}, 3000);
@@ -70,24 +78,62 @@ function Detail(props) {
             <div className="col-md-6">
                 <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
             </div>
-            <div className="col-md-6 mt-4">
-                <h4 className="pt-5">{myMovie.title}</h4>
-                <p>예매율 {myMovie.content}%</p>
-                <p>별점 ⭐{myMovie.price}</p>
-                <Info 재고={props.재고}/>
-                <button className="btn btn-danger" onClick={() => {
-                    props.재고변경([9,11,12])
-                }}>주문하기</button> 
-                <button className="btn btn-danger" onClick={() => {
-                    history.goBack();
-                }}>뒤로가기</button> 
-                <button className="btn btn-success" onClick={() => {
-                    history.push('/');
-                }}>홈으로가기</button> 
+                <div className="col-md-6 mt-4">
+                    <h4 className="pt-5">{myMovie.title}</h4>
+                    <p>예매율 {myMovie.content}%</p>
+                    <p>별점 ⭐{myMovie.price}</p>
+                    <Info 재고={props.재고}/>
+                    <button className="btn btn-danger" onClick={() => {
+
+                        props.재고변경([9,11,12])
+                        props.dispatch({type : '항목추가', payload : {id:2, name:'새로운상품', quan:1}})
+                        history.push('/cart');
+
+                    }}>주문하기</button> 
+                    <button className="btn btn-danger" onClick={() => {
+                        history.goBack();
+                    }}>뒤로가기</button> 
+                    <button className="btn btn-success" onClick={() => {
+                        history.push('/');
+                    }}>홈으로가기</button> 
+                </div>
             </div>
-            </div>
+
+            <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
+                <Nav.Item>
+                    <Nav.Link eventKey="link-0" onClick={() => { 스위치변경(false); 누른탭변경(0)}}>Option 0</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="link-1" onClick={() => { 스위치변경(false); 누른탭변경(1)}}>Option 1</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="disabled" disabled>Disabled</Nav.Link>
+                </Nav.Item>
+            </Nav>
+
+            <CSSTransition in={스위치} classNames="wow" timeout={500}>
+                <TabContent 누른탭={누른탭} 스위치변경={스위치변경}/>
+            </CSSTransition>
+
         </div> 
     )
+}
+
+function TabContent(props) {
+
+    // TabContent가 등장/업데이트 될 때 스위치 state를 true로 변경
+    useEffect(()=>{
+        props.스위치변경(true);
+    });
+
+    if (props.누른탭 === 0) {
+        return <div>0번째 내용입니다.</div>
+    } else if (props.누른탭 === 1) {
+        return <div>1번째 내용입니다.</div>
+    } else if (props.누른탭 === 2) {
+        return <div>2번째 내용입니다.</div>
+    } 
+
 }
 
 function Info(props) {
@@ -96,4 +142,13 @@ function Info(props) {
     )
 }
 
-export default Detail;
+function state를props화(state) {
+    return {
+        // state : state // state라는 이름의 props로 변경
+        // // 상품명 : state[0].name
+        state : state.reducer,
+        alert열렸니 : state.reducer2
+    }
+}
+
+export default connect(state를props화)(Detail)
