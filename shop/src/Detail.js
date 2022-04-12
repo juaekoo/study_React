@@ -83,10 +83,11 @@ function Detail(props) {
                     <p>예매율 {myMovie.content}%</p>
                     <p>별점 ⭐{myMovie.price}</p>
                     <Info 재고={props.재고}/>
+
                     <button className="btn btn-danger" onClick={() => {
 
-                        props.재고변경([9,11,12])
-                        props.dispatch({type : '항목추가', payload : {id:2, name:'새로운상품', quan:1}})
+                        props.재고변경([9,11,12]);
+                        props.dispatch({type : '항목추가', 데이터 : {id: myMovie.id, name: myMovie.title, quan: 1}});
                         history.push('/cart');
 
                     }}>주문하기</button> 

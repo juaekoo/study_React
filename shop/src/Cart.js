@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, memo } from 'react';
 import {Table} from 'react-bootstrap';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
@@ -28,8 +28,8 @@ function Cart(props) {
                                     <td>{a.name}</td>
                                     <td>{a.quan}</td>
                                     <td>
-                                        <button onClick={() => { dispatch({type : '수량증가', payload : {name : 'koo'} }) }}>➕</button>
-                                        <button onClick={() => { dispatch({type : '수량감소'}) }}>➖</button>
+                                        <button onClick={() => { dispatch({type : '수량증가', 데이터 : a.id }) }}>➕</button>
+                                        <button onClick={() => { dispatch({type : '수량감소', 데이터 : a.id }) }}>➖</button>
                                     </td>
                                 </tr>
                             )
@@ -46,9 +46,28 @@ function Cart(props) {
                     </div>)
                 : null
             }
+            <Parent 이름="주애2" 나이="25"/>
         </div>
     )
 }
+
+function Parent(props){
+    return (
+        <div>
+        <Child1 이름={props.이름}/>
+        <Child2 나이={props.나이}/> 
+        </div>
+    )
+}
+function Child1(){
+    useEffect( ()=>{ console.log('이름 리렌더링') } );
+    return <div>이름</div>
+}
+let Child2 = memo(function(){
+    useEffect( ()=>{ console.log('나이 리렌더링') } );
+    return <div>나이</div>
+});
+
 
 // 아래와 같은 방법을 좀 더 쉬운 방법으로 대체
 /*

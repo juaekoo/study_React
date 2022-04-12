@@ -1,12 +1,14 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, lazy, Suspense} from 'react';
 import { Container, Nav, Navbar, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import './App.css';
 import Data from './data.js';
-import Detail from './Detail.js';
 import axios from 'axios';
 import { Link, Route, Switch } from 'react-router-dom';
-
 import Cart from './Cart.js'
+import { useHistory } from 'react-router-dom';
+// import Detail from './Detail.js';
+let Detail = lazy(()=>{ return import('./Detail.js') });
+
 
 // 1. context 만들기 - 범위생성
 export let 재고context = React.createContext();
@@ -110,14 +112,19 @@ function App() {
 
         {/* :id란 '모든문자'라는 경로 */}
         <Route path="/detail/:id">
-          <Detail movie={movie} 재고={재고} 재고변경={재고변경} />
+          <재고context.Provider value={재고}>
+            <Suspense fallback={<div>~로딩중~</div>}>
+             <Detail movie={movie} 재고={재고} 재고변경={재고변경} />
+            </Suspense>
+          </재고context.Provider>
         </Route>
 
         {/* <Route path="/컴포넌트넣고싶다면" component={Modal} ></Route> */}
-
+        
         <Route path="/cart">
           <Cart />
         </Route>
+
       </Switch>
     </div>
   );
@@ -126,12 +133,12 @@ function App() {
 function Movie(props) {
 
   let 재고 = useContext(재고context);
+  let history = useHistory();
 
   return (
-    <div className='col-md-4'>
+    <div className='col-md-4' onClick={()=>{ history.push('/detail/' + props.movie.id) }}>
+      <img src={ 'https://codingapple1.github.io/shop/shoes' + (props.i + 1) + '.jpg' } width="100%"/>
       {/* <img src={require('./img/' + props.i + '.jpg')} width="100%"/> */}
-      원래img범위
-      {/* 인데 예제가 내 img 코드와 다름. 따라서 axios예제 실행을 위해 일단 주석처리 */}
       <h4>{ props.movie.title }</h4>
       <p> 예매율 { props.movie.content }% | ⭐{ props.movie.price } </p>
       {재고[0]}
